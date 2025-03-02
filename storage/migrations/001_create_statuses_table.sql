@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS statuses
+(
+    id   TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);

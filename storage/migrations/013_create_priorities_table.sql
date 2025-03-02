@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS prioritets
+(
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+);
