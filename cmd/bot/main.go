@@ -10,7 +10,7 @@ import (
 
 func main() {
 	telemetry.InitLogger()
-	configuration, err := config.Init()
+	configuration, err := config.Init("config.toml")
 	if err != nil {
 		log.Fatal(err)
 	}
