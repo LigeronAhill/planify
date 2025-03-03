@@ -22,7 +22,7 @@ func New(fileName string) (*Repository, error) {
 	projectPath := strings.TrimSpace(string(cmdOut))
 
 	filePath := path.Join(projectPath, "storage", fileName)
-	db, err := gorm.Open(sqlite.Open(filePath), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(filePath), &gorm.Config{TranslateError: true})
 	if err != nil {
 		return nil, err
 	}
