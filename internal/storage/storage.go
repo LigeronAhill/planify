@@ -1,27 +1,20 @@
 package storage
 
 import (
-	"context"
-	"database/sql"
-	"log/slog"
-	"os"
 	"os/exec"
 	"path"
 	"strings"
 
-	_ "github.com/mattn/go-sqlite3"
-)
-
-const (
-	op = "база данных"
+	"github.com/LigeronAhill/planify/internal/models"
+	"github.com/glebarez/sqlite"
+	"gorm.io/gorm"
 )
 
 type Repository struct {
-	db          *sql.DB
-	queriesPath string
+	db *gorm.DB
 }
 
-func New(ctx context.Context, fileName string) (*Repository, error) {
+func New(fileName string) (*Repository, error) {
 	cmdOut, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
 	if err != nil {
 		return nil, err
@@ -29,68 +22,22 @@ func New(ctx context.Context, fileName string) (*Repository, error) {
 	projectPath := strings.TrimSpace(string(cmdOut))
 
 	filePath := path.Join(projectPath, "storage", fileName)
-
-	db, err := sql.Open("sqlite3", filePath)
+	db, err := gorm.Open(sqlite.Open(filePath), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 
-	queriesPath := path.Join(projectPath, "storage", "queries")
-
-	repository := &Repository{db, queriesPath}
-
-	var version string
-	row, err := repository.QueryRow(ctx, "version.sql")
-	if err != nil {
-		return nil, err
-	}
-	err = row.Scan(&version)
-	if err != nil {
-		return nil, err
-	}
-	slog.Info(op, slog.String("version", version))
-	return repository, nil
+	return &Repository{db}, nil
 }
 
-func (r *Repository) Close() error {
-	return r.db.Close()
-}
-
-func (r *Repository) QueryRow(ctx context.Context, fileName string, args ...any) (*sql.Row, error) {
-	qPath := path.Join(r.queriesPath, fileName)
-	qb, err := os.ReadFile(qPath)
+func (r *Repository) Migrate() error {
+	err := r.db.AutoMigrate(&models.User{})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	q := string(qb)
-	result := r.db.QueryRowContext(ctx, q, args...)
-	return result, nil
-}
-
-func (r *Repository) Query(ctx context.Context, fileName string, args ...any) (*sql.Rows, error) {
-	qPath := path.Join(r.queriesPath, fileName)
-	qb, err := os.ReadFile(qPath)
+	err = r.db.AutoMigrate(&models.Task{})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	q := string(qb)
-	result, err := r.db.QueryContext(ctx, q, args...)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func (r *Repository) Exec(ctx context.Context, fileName string, args ...any) (*sql.Rows, error) {
-	qPath := path.Join(r.queriesPath, fileName)
-	qb, err := os.ReadFile(qPath)
-	if err != nil {
-		return nil, err
-	}
-	q := string(qb)
-	result, err := r.db.QueryContext(ctx, q, args...)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return nil
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"log/slog"
 
@@ -11,7 +10,6 @@ import (
 )
 
 func main() {
-	ctx := context.Background()
 	telemetry.InitLogger()
 	configuration, err := config.Init("config.toml")
 	if err != nil {
@@ -19,13 +17,11 @@ func main() {
 	}
 	token := configuration.GetString("TELEGRAM_BOT_TOKEN")
 	slog.Info("Файл конфигурации прочитан", slog.String("token", token))
-	repository, err := storage.New(ctx, "storage.db")
+	repository, err := storage.New("storage.db")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer func() {
-		if err := repository.Close(); err != nil {
-			panic(err)
-		}
-	}()
+	if err = repository.Migrate(); err != nil {
+		log.Fatal(err)
+	}
 }

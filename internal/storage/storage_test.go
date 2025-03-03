@@ -1,17 +1,20 @@
 package storage
 
 import (
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewStorage(t *testing.T) {
-	ctx := context.Background()
+func TestNew(t *testing.T) {
 	file := "test.db"
-	r, err := New(ctx, file)
+	_, err := New(file)
 	assert.NoError(t, err)
-	err = r.Close()
+}
+
+func TestMigrate(t *testing.T) {
+	r, err := New("test.db")
+	assert.NoError(t, err)
+	err = r.Migrate()
 	assert.NoError(t, err)
 }
