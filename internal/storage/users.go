@@ -5,19 +5,13 @@ import (
 )
 
 func (r *Repository) InsertUser(user *models.User) error {
-	existingUser, err := r.GetUser(user.ID)
+	var existing models.User
+	if err := r.db.First(&existing, user.ID).Error; err == nil {
+		user.CreatedAt = existing.CreatedAt
+	}
+	err := r.db.Save(&user).Error
 	if err != nil {
-		res := r.db.Create(user)
-		if res.Error != nil {
-			return res.Error
-		}
-	} else {
-		user.CreatedAt = existingUser.CreatedAt
-		result := r.db.Save(user)
-		if result.Error != nil {
-			return result.Error
-		}
-
+		return err
 	}
 	return nil
 }

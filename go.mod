@@ -25,6 +25,7 @@ require (
 )
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.2.1
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/glebarez/sqlite v1.11.0
 	github.com/hashicorp/hcl v1.0.0 // indirect
