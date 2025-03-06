@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
 
 func TestUser(t *testing.T) {
@@ -13,11 +12,12 @@ func TestUser(t *testing.T) {
 	newUser.SetLastName("Marly")
 	newUser.SetUsername("Banana")
 	want := &User{
-		Model: gorm.Model{
-			ID: 42,
-		},
-		Username: "Banana",
+		username:  "Banana",
+		firstName: "Bob",
+		lastName:  "Marly",
 	}
-	assert.Equal(t, want.Username, newUser.Username)
+	assert.Equal(t, want.username, newUser.username)
 	assert.Equal(t, "Bob Marly", newUser.FullName())
+	assert.Equal(t, want.FirstName(), newUser.FirstName())
+	assert.Equal(t, want.LastName(), newUser.LastName())
 }

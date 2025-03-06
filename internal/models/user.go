@@ -2,42 +2,79 @@ package models
 
 import (
 	"fmt"
-
-	"gorm.io/gorm"
+	"time"
 )
 
 type User struct {
-	gorm.Model
-	FirstName string
-	LastName  string
-	Username  string
+	id        int
+	firstName string
+	lastName  string
+	username  string
+	created   time.Time
+	updated   time.Time
 }
 
-func NewUser(id uint) *User {
+func NewUser(id int) *User {
 	u := &User{}
-	u.ID = id
+	u.id = id
+	u.created = time.Now()
+	u.updated = time.Now()
 	return u
 }
 
 func (u *User) SetFirstName(firstName string) *User {
-	u.FirstName = firstName
+	u.firstName = firstName
 	return u
 }
 
 func (u *User) SetLastName(lastName string) *User {
-	u.LastName = lastName
+	u.lastName = lastName
 	return u
 }
 
 func (u *User) SetUsername(username string) *User {
-	u.Username = username
+	u.username = username
+	return u
+}
+
+func (u *User) SetCreated(created time.Time) *User {
+	u.created = created
+	return u
+}
+
+func (u *User) SetUpdated(updated time.Time) *User {
+	u.updated = updated
 	return u
 }
 
 func (u *User) FullName() string {
-	if len(u.LastName) != 0 {
-		return fmt.Sprintf("%s %s", u.FirstName, u.LastName)
+	if len(u.lastName) != 0 {
+		return fmt.Sprintf("%s %s", u.firstName, u.lastName)
 	} else {
-		return u.FirstName
+		return u.firstName
 	}
+}
+
+func (u *User) ID() int {
+	return u.id
+}
+
+func (u *User) FirstName() string {
+	return u.firstName
+}
+
+func (u *User) LastName() string {
+	return u.lastName
+}
+
+func (u *User) Username() string {
+	return u.username
+}
+
+func (u *User) Created() time.Time {
+	return u.created
+}
+
+func (u *User) Updated() time.Time {
+	return u.updated
 }
