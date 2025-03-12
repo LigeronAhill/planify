@@ -7,6 +7,7 @@ import (
 
 	"github.com/LigeronAhill/planify/internal/config"
 	"github.com/LigeronAhill/planify/internal/repository"
+	"github.com/LigeronAhill/planify/internal/telegram/client"
 	"github.com/LigeronAhill/planify/internal/telemetry"
 )
 
@@ -25,10 +26,15 @@ func main() {
 	}
 	defer func() {
 		if err := repository.Close(); err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 	}()
 	if err = repository.Migrate(ctx); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	bot, err := client.New(ctx, token)
+	if err != nil {
+		panic(err)
+	}
+	bot.Run(ctx)
 }

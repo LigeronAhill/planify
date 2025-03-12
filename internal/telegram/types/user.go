@@ -1,4 +1,4 @@
-package tgmodels
+package types
 
 type User struct {
 	ID        uint   `json:"id"`

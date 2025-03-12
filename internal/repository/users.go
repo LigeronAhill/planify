@@ -29,31 +29,32 @@ func (r *Repository) GetAllUsers(ctx context.Context) ([]*models.User, error) {
 		if err != nil {
 			return nil, e.Wrap(op, err)
 		}
-		user := models.
-			NewUser(id).
-			SetFirstName(firstName).
-			SetLastName(lastName).
-			SetUsername(username).
-			SetCreated(created).
-			SetUpdated(updated)
+		user := &models.User{
+			UserID:    id,
+			FirstName: firstName,
+			LastName:  lastName,
+			Username:  username,
+			Created:   created,
+			Updated:   updated,
+		}
 		result = append(result, user)
 	}
 	return result, nil
 }
 
 func (r *Repository) InsertUser(ctx context.Context, user *models.User) (*models.User, error) {
-	op := fmt.Sprintf("добавление или обновление пользователя в базе данных с id: %d", user.ID())
+	op := fmt.Sprintf("добавление или обновление пользователя в базе данных с id: %d", user.UserID)
 	slog.Info(op)
 	f := path.Join(r.queriesPath, "users", "insert.sql")
 	row, err := r.QueryRow(
 		ctx,
 		f,
-		user.ID(),
-		user.FirstName(),
-		user.LastName(),
-		user.Username(),
-		user.Created(),
-		user.Updated(),
+		user.UserID,
+		user.FirstName,
+		user.LastName,
+		user.Username,
+		user.Created,
+		user.Updated,
 	)
 	if err != nil {
 		return nil, e.Wrap(op, err)
@@ -65,13 +66,14 @@ func (r *Repository) InsertUser(ctx context.Context, user *models.User) (*models
 	if err != nil {
 		return nil, e.Wrap(op, err)
 	}
-	createdUser := models.
-		NewUser(id).
-		SetFirstName(firstName).
-		SetLastName(lastName).
-		SetUsername(username).
-		SetCreated(created).
-		SetUpdated(updated)
+	createdUser := &models.User{
+		UserID:    id,
+		FirstName: firstName,
+		LastName:  lastName,
+		Username:  username,
+		Created:   created,
+		Updated:   updated,
+	}
 	return createdUser, nil
 }
 
@@ -90,13 +92,14 @@ func (r *Repository) GetUser(ctx context.Context, user_id int) (*models.User, er
 	if err != nil {
 		return nil, e.Wrap(op, err)
 	}
-	createdUser := models.
-		NewUser(user_id).
-		SetFirstName(firstName).
-		SetLastName(lastName).
-		SetUsername(username).
-		SetCreated(created).
-		SetUpdated(updated)
+	createdUser := &models.User{
+		UserID:    user_id,
+		FirstName: firstName,
+		LastName:  lastName,
+		Username:  username,
+		Created:   created,
+		Updated:   updated,
+	}
 	return createdUser, nil
 }
 

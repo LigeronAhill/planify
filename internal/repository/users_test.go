@@ -3,11 +3,27 @@ package repository
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/LigeronAhill/planify/internal/models"
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/assert"
 )
+
+func fakeuser() *models.User {
+	id := gofakeit.Int()
+	firstName := gofakeit.FirstName()
+	lastName := gofakeit.LastName()
+	username := gofakeit.Username()
+	return &models.User{
+		UserID:    id,
+		FirstName: firstName,
+		LastName:  lastName,
+		Username:  username,
+		Created:   time.Now(),
+		Updated:   time.Now(),
+	}
+}
 
 func TestGetAllUsers(t *testing.T) {
 	ctx := context.TODO()
@@ -33,14 +49,10 @@ func TestInsertUser(t *testing.T) {
 			panic(err)
 		}
 	}()
-	id := gofakeit.Int()
-	firstName := gofakeit.FirstName()
-	lastName := gofakeit.LastName()
-	username := gofakeit.Username()
-	user := models.NewUser(int(id)).SetFirstName(firstName).SetLastName(lastName).SetUsername(username)
+	user := fakeuser()
 	created, err := repo.InsertUser(ctx, user)
 	assert.NoError(err)
-	assert.Equal(user.Username(), created.Username())
+	assert.Equal(user.Username, created.Username)
 }
 
 func TestGetUser(t *testing.T) {
@@ -53,17 +65,13 @@ func TestGetUser(t *testing.T) {
 			panic(err)
 		}
 	}()
-	id := gofakeit.Int()
-	firstName := gofakeit.FirstName()
-	lastName := gofakeit.LastName()
-	username := gofakeit.Username()
-	user := models.NewUser(int(id)).SetFirstName(firstName).SetLastName(lastName).SetUsername(username)
+	user := fakeuser()
 	created, err := repo.InsertUser(ctx, user)
 	assert.NoError(err)
-	assert.Equal(user.Username(), created.Username())
-	stored, err := repo.GetUser(ctx, id)
+	assert.Equal(user.Username, created.Username)
+	stored, err := repo.GetUser(ctx, user.UserID)
 	assert.NoError(err)
-	assert.Equal(stored.Username(), created.Username())
+	assert.Equal(stored.Username, created.Username)
 }
 
 func TestDeleteUser(t *testing.T) {
@@ -76,16 +84,12 @@ func TestDeleteUser(t *testing.T) {
 			panic(err)
 		}
 	}()
-	id := gofakeit.Int()
-	firstName := gofakeit.FirstName()
-	lastName := gofakeit.LastName()
-	username := gofakeit.Username()
-	user := models.NewUser(int(id)).SetFirstName(firstName).SetLastName(lastName).SetUsername(username)
+	user := fakeuser()
 	created, err := repo.InsertUser(ctx, user)
 	assert.NoError(err)
-	assert.Equal(user.Username(), created.Username())
-	err = repo.DeleteUser(ctx, created.ID())
+	assert.Equal(user.Username, created.Username)
+	err = repo.DeleteUser(ctx, created.UserID)
 	assert.NoError(err)
-	_, err = repo.GetUser(ctx, created.ID())
+	_, err = repo.GetUser(ctx, created.UserID)
 	assert.Error(err)
 }
