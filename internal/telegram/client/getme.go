@@ -10,7 +10,7 @@ import (
 )
 
 func (b *Bot) getMe(ctx context.Context) (*types.User, error) {
-	op := "GetMe"
+	op := "get me"
 	body, err := b.request(ctx, methods.GetMe, nil)
 	if err != nil {
 		return nil, e.Wrap(op, err)

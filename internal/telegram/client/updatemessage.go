@@ -12,7 +12,7 @@ import (
 	"github.com/LigeronAhill/planify/internal/telegram/types"
 )
 
-func (b *Bot) sendMessage(ctx context.Context, message *types.SendMessageRequest) error {
+func (b *Bot) EditMessageText(ctx context.Context, message *types.EditMessageTextRequest) error {
 	op := "sending message"
 	slog.Debug(op, slog.Int("to chat", message.ChatID), slog.String("text", message.Text))
 	jsonBody, err := json.Marshal(message)
@@ -20,7 +20,7 @@ func (b *Bot) sendMessage(ctx context.Context, message *types.SendMessageRequest
 		return e.Wrap(op, err)
 	}
 	reader := bytes.NewReader(jsonBody)
-	body, err := b.request(ctx, methods.SendMessage, reader)
+	body, err := b.request(ctx, methods.EditMessageText, reader)
 	if err != nil {
 		return e.Wrap(op, err)
 	}

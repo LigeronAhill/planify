@@ -16,7 +16,7 @@ const (
 )
 
 type InlineKeyboardMarkup struct {
-	InlineKeyboard []*InlineKeyboardButton `json:"inline_keyboard"`
+	InlineKeyboard [][]*InlineKeyboardButton `json:"inline_keyboard"`
 }
 
 type InlineKeyboardButton struct {
@@ -26,12 +26,12 @@ type InlineKeyboardButton struct {
 }
 
 type ReplyKeyboardMarkup struct {
-	Keyboard              []*KeyboardButton `json:"keyboard"`
-	IsPersistent          bool              `json:"is_persistent,omitempty"`
-	ResizeKeyboard        bool              `json:"resize_keyboard,omitempty"`
-	OneTimeKeyboard       bool              `json:"one_time_keyboard,omitempty"`
-	InputFieldPlaceholder string            `json:"input_field_placeholder,omitempty"`
-	Selective             bool              `json:"selective,omitempty"`
+	Keyboard              [][]*KeyboardButton `json:"keyboard"`
+	IsPersistent          bool                `json:"is_persistent,omitempty"`
+	ResizeKeyboard        bool                `json:"resize_keyboard,omitempty"`
+	OneTimeKeyboard       bool                `json:"one_time_keyboard,omitempty"`
+	InputFieldPlaceholder string              `json:"input_field_placeholder,omitempty"`
+	Selective             bool                `json:"selective,omitempty"`
 }
 
 type KeyboardButton struct {

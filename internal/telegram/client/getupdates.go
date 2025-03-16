@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"log/slog"
 
 	"github.com/LigeronAhill/planify/internal/e"
@@ -13,8 +12,8 @@ import (
 )
 
 func (b *Bot) getUpdates(ctx context.Context) ([]*types.Update, error) {
-	op := fmt.Sprintf("getUpdates limit: %d offset: %d", b.limit, b.offset)
-	slog.Debug(op)
+	op := "getting updates"
+	slog.Debug(op, slog.Int("limit", b.limit), slog.Int("offset", b.offset))
 	reqBody := types.UpdatesRequest{
 		Limit:  10,
 		Offset: b.offset,
